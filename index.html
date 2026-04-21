@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HVAC CLOUD v8.6</title>
+    <title>HVAC CLOUD v8.7</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -53,7 +53,6 @@
     </nav>
 
     <main class="max-w-[1800px] mx-auto p-4 md:p-8">
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center md:items-start transition-all hover:shadow-md">
                 <div class="flex items-center gap-2 mb-1">
@@ -198,8 +197,10 @@
                 const response = await fetch(CLOUD_URL);
                 const rawCloudData = await response.json();
                 
-                // 🔥 БРОНЕБОЙНЫЙ ФИЛЬТР: Отсекаем все пустые строки (призраки из Google)
-                const cloudData = rawCloudData.filter(item => item && item.kks && item.kks.trim() !== '');
+                // 🔥 ЖЕСТКИЙ ИНЖЕНЕРНЫЙ ФИЛЬТР: Принимаем только строки с названием XAA
+                const cloudData = rawCloudData.filter(item => {
+                    return item && item.kks && String(item.kks).toUpperCase().includes('XAA');
+                });
                 
                 if (cloudData && cloudData.length > 0) {
                     data = cloudData;
@@ -255,11 +256,11 @@
                 tr.className = `border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isDue ? 'animate-pulse-red' : ''}`;
                 
                 tr.innerHTML = `
-                    <td class="px-4 py-4"><input type="date" value="${item.date}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-black outline-none text-slate-600 dark:text-slate-300 dark:[color-scheme:dark]"></td>
+                    <td class="px-4 py-4"><input type="date" value="${item.date || new Date().toISOString().split('T')[0]}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-black outline-none text-slate-600 dark:text-slate-300 dark:[color-scheme:dark]"></td>
                     <td class="px-4 py-4"><div class="font-mono font-black text-sm text-blue-600 dark:text-blue-400">${item.kks}</div><div class="text-[9px] opacity-50 uppercase font-bold">${item.type}</div></td>
-                    <td class="px-4 py-4"><input value="${item.area}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] font-black w-full outline-none uppercase text-slate-500 dark:text-slate-400"></td>
-                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-blue-500 outline-none">`}</td>
-                    <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp}" onchange="u(${i},'temp',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-red-500 outline-none ${item.temp>25?'text-red-500':''}">`}</td>
+                    <td class="px-4 py-4"><input value="${item.area || ''}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] font-black w-full outline-none uppercase text-slate-500 dark:text-slate-400"></td>
+                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press || 0}" onchange="u(${i},'press',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-blue-500 outline-none">`}</td>
+                    <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp || 0}" onchange="u(${i},'temp',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-red-500 outline-none ${item.temp>25?'text-red-500':''}">`}</td>
                     <td class="px-4 py-4 text-center">
                         <select onchange="u(${i},'comp',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer ${item.comp === 'Error' ? 'text-red-500' : item.comp === 'Standby' ? 'text-amber-500' : ''}">
                             <option value="Running" ${item.comp=='Running'?'selected':''}>В работе / Run</option>
@@ -285,7 +286,7 @@
         function t(i) { data[i].alarm = data[i].alarm == 'Normal' ? 'Alarm' : 'Normal'; render(); save(); }
         
         function resetToDefault() { 
-            if(confirm("WARNING: This will overwrite the Google Sheet with default factory data. Continue? / Внимание: Это перезапишет базу исходными данными. Продолжить?")) { 
+            if(confirm("Внимание: Это удалит весь мусор и перезапишет базу чистыми исходными данными. Продолжить?")) { 
                 data = getDefaultData(); 
                 save(true); 
                 render(); 
