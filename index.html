@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HVAC CLOUD v8.5</title>
+    <title>HVAC CLOUD v8.6</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -196,7 +196,10 @@
 
             try {
                 const response = await fetch(CLOUD_URL);
-                const cloudData = await response.json();
+                const rawCloudData = await response.json();
+                
+                // 🔥 БРОНЕБОЙНЫЙ ФИЛЬТР: Отсекаем все пустые строки (призраки из Google)
+                const cloudData = rawCloudData.filter(item => item && item.kks && item.kks.trim() !== '');
                 
                 if (cloudData && cloudData.length > 0) {
                     data = cloudData;
@@ -237,7 +240,6 @@
 
         function render(fData = data) {
             tableBody.innerHTML = '';
-            
             let runCount = 0;
             let dueCount = 0;
 
@@ -247,7 +249,6 @@
                 const isDue = (isIDU && days >= 7) || (!isIDU && days >= 3);
                 
                 if (isDue) dueCount++;
-                // Считаем агрегат в работе, если статус Running или Standby (не выключен и не в ошибке)
                 if (item.comp === 'Running' || item.comp === 'Standby') runCount++;
                 
                 const tr = document.createElement('tr');
