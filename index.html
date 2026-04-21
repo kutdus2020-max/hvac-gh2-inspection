@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HVAC CLOUD v8.3</title>
+    <title>HVAC CLOUD v8.4</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -25,47 +25,78 @@
         ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-[#f1f5f9] dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen font-sans antialiased">
+<body class="bg-[#f1f5f9] dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen font-sans antialiased transition-colors duration-300">
 
-    <nav class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800 p-4 sticky top-0 z-50">
-        <div class="max-w-[1800px] mx-auto flex justify-between items-center">
+    <nav class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800 p-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-[1800px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-4">
-                <div class="bg-blue-600 p-2.5 rounded-2xl text-white shadow-lg"><i class="fas fa-cloud"></i></div>
+                <div class="bg-gradient-to-br from-blue-600 to-emerald-500 p-3 rounded-2xl text-white shadow-lg shadow-emerald-500/20">
+                    <i class="fas fa-cloud text-xl"></i>
+                </div>
                 <div>
-                    <h1 class="text-xl font-black uppercase tracking-tight">HVAC UKS GH2</h1>
-                    <div id="cloudStatus" class="text-[9px] font-bold uppercase text-slate-500 bg-slate-200 px-2 py-1 rounded shadow-sm inline-block mt-1">
-                        <i class="fas fa-spinner fa-spin mr-1"></i> Ожидание...
+                    <h1 class="text-xl font-black uppercase tracking-tight leading-none">
+                        <span class="text-blue-600 dark:text-blue-400">HVAC INSPECTION</span>
+                        <span class="text-emerald-600 dark:text-emerald-400 ml-1">UKS GH2</span>
+                    </h1>
+                    <div id="cloudStatus" class="text-[9px] font-bold uppercase text-slate-500 bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded shadow-sm inline-block mt-1">
+                        <i class="fas fa-spinner fa-spin mr-1"></i> Ожидание / Waiting...
                     </div>
                 </div>
             </div>
-            <div class="flex gap-2 items-center">
-                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-amber-400 flex items-center justify-center border border-slate-200 dark:border-slate-700"><i id="themeIcon" class="fas fa-moon"></i></button>
-                <button onclick="copyTelegramReport()" class="bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-emerald-400">ОТЧЕТ TG</button>
-                <button onclick="resetToDefault()" class="bg-slate-200 dark:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">СБРОС БАЗЫ</button>
+            <div class="flex flex-wrap gap-2 items-center justify-center">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-amber-400 flex items-center justify-center border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"><i id="themeIcon" class="fas fa-moon"></i></button>
+                <button onclick="exportCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-emerald-500/20 transition-all"><i class="fas fa-download mr-1"></i> ЭКСПОРТ / EXPORT</button>
+                <button onclick="copyTelegramReport()" class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-4 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-emerald-100 dark:hover:bg-emerald-800/50 transition-all"><i class="fab fa-telegram-plane mr-1"></i> ОТЧЕТ / TG REPORT</button>
+                <button onclick="resetToDefault()" class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt mr-1"></i> СБРОС / RESET</button>
             </div>
         </div>
     </nav>
 
     <main class="max-w-[1800px] mx-auto p-4 md:p-8">
-        <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-            <div class="p-4 border-b dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center">
-                <span class="text-xs font-black uppercase text-slate-400 tracking-widest">Master Data Table</span>
-                <input type="text" id="search" placeholder="Поиск KKS / Локация..." class="w-72 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center md:items-start transition-all hover:shadow-md">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-server text-slate-400"></i>
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Всего Блоков / Total Fleet</p>
+                </div>
+                <div id="statTotal" class="text-4xl font-black text-slate-800 dark:text-white">0</div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 border-t-4 border-t-blue-500 flex flex-col items-center md:items-start transition-all hover:shadow-md">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-fan text-blue-500"></i>
+                    <p class="text-blue-500 text-[10px] font-black uppercase tracking-widest">В работе / Running Units</p>
+                </div>
+                <div id="statComp" class="text-4xl font-black text-blue-600 dark:text-blue-400">0</div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700 border-t-4 border-t-orange-500 flex flex-col items-center md:items-start transition-all hover:shadow-md">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-exclamation-triangle text-orange-500 animate-pulse"></i>
+                    <p class="text-orange-500 text-[10px] font-black uppercase tracking-widest">Просрочено ТО / Maint. Due</p>
+                </div>
+                <div id="statDue" class="text-4xl font-black text-orange-600 dark:text-orange-400">0</div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col md:flex-row justify-between items-center gap-4">
+                <span class="text-sm font-black uppercase text-slate-600 dark:text-slate-300 tracking-widest italic">MDV V8 System Matrix</span>
+                <input type="text" id="search" placeholder="Поиск (Search KKS / Area)..." class="w-full md:w-96 px-6 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all dark:text-white">
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-100 dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400">
+                    <thead class="bg-slate-100/50 dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest border-b border-slate-200 dark:border-slate-700">
                         <tr>
-                            <th class="px-4 py-4">Дата</th>
-                            <th class="px-4 py-4">KKS / Тип</th>
-                            <th class="px-4 py-4">Локация</th>
-                            <th class="px-2 py-4 text-center">Давление</th>
-                            <th class="px-2 py-4 text-center">Темп.</th>
-                            <th class="px-4 py-4 text-center">Мотор</th>
-                            <th class="px-4 py-4 text-center">Питание</th>
-                            <th class="px-4 py-4 text-center">Фильтр</th>
-                            <th class="px-4 py-4 text-center">ТО</th>
-                            <th class="px-4 py-4 text-center">Статус</th>
+                            <th class="px-4 py-5 w-32">Дата / Date</th>
+                            <th class="px-4 py-5 w-32">KKS / Тип (Type)</th>
+                            <th class="px-4 py-5 w-40">Локация / Area</th>
+                            <th class="px-2 py-5 text-center">Давление / Press.</th>
+                            <th class="px-2 py-5 text-center">Темп. / Temp.</th>
+                            <th class="px-4 py-5 text-center border-l border-slate-200 dark:border-slate-700">Агрегат / Motor</th>
+                            <th class="px-4 py-5 text-center">Питание / Power</th>
+                            <th class="px-4 py-5 text-center border-l border-slate-200 dark:border-slate-700">Фильтр / Filter</th>
+                            <th class="px-4 py-5 text-center">ТО / Check</th>
+                            <th class="px-4 py-5 text-center">Статус / Alarm</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-slate-50 dark:divide-slate-700/50"></tbody>
@@ -156,7 +187,7 @@
             const statusEl = document.getElementById('cloudStatus');
             
             if (CLOUD_URL.includes("ВСТАВЬ")) {
-                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> ⚠️ НЕТ ССЫЛКИ';
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> ⚠️ НЕТ ССЫЛКИ / NO URL';
                 statusEl.className = "text-[9px] font-bold uppercase text-red-600 bg-red-100 px-2 py-1 rounded inline-block mt-1";
                 if (data.length === 0) data = getDefaultData();
                 render();
@@ -173,14 +204,14 @@
                     statusEl.className = "text-[9px] font-bold uppercase text-emerald-600 bg-emerald-100 px-2 py-1 rounded shadow-sm inline-block mt-1";
                     render();
                 } else {
-                    statusEl.innerHTML = '<i class="fas fa-upload mr-1"></i> 🟡 ЗАПИСЬ БАЗЫ...';
+                    statusEl.innerHTML = '<i class="fas fa-upload mr-1"></i> 🟡 ЗАПИСЬ БАЗЫ / INIT DB...';
                     statusEl.className = "text-[9px] font-bold uppercase text-amber-600 bg-amber-100 px-2 py-1 rounded shadow-sm inline-block mt-1";
                     data = getDefaultData();
                     render();
-                    await save(true); // Форсируем сохранение в пустую таблицу
+                    await save(true);
                 }
             } catch (e) {
-                statusEl.innerHTML = '<i class="fas fa-wifi fa-slash mr-1"></i> 🔴 ОШИБКА СЕТИ (LOCAL)';
+                statusEl.innerHTML = '<i class="fas fa-wifi fa-slash mr-1"></i> 🔴 ОШИБКА СЕТИ / LOCAL MODE';
                 statusEl.className = "text-[9px] font-bold uppercase text-red-600 bg-red-100 px-2 py-1 rounded inline-block mt-1";
                 if (data.length === 0) data = getDefaultData();
                 render();
@@ -190,55 +221,95 @@
         async function save(isInit = false) {
             if (CLOUD_URL.includes("ВСТАВЬ")) return;
             const statusEl = document.getElementById('cloudStatus');
-            statusEl.innerHTML = '<i class="fas fa-cloud-upload-alt mr-1"></i> 🔵 СОХРАНЕНИЕ...';
+            statusEl.innerHTML = '<i class="fas fa-cloud-upload-alt mr-1"></i> 🔵 СОХРАНЕНИЕ / SAVING...';
             statusEl.className = "text-[9px] font-bold uppercase text-blue-600 bg-blue-100 px-2 py-1 rounded inline-block mt-1";
             try {
                 await fetch(CLOUD_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
                 setTimeout(() => {
-                    statusEl.innerHTML = isInit ? '<i class="fas fa-check-double mr-1"></i> 🟢 БАЗА СОЗДАНА' : '<i class="fas fa-check-circle mr-1"></i> 🟢 ONLINE / SYNC OK';
+                    statusEl.innerHTML = isInit ? '<i class="fas fa-check-double mr-1"></i> 🟢 БАЗА СОЗДАНА / DB OK' : '<i class="fas fa-check-circle mr-1"></i> 🟢 ONLINE / SYNC OK';
                     statusEl.className = "text-[9px] font-bold uppercase text-emerald-600 bg-emerald-100 px-2 py-1 rounded shadow-sm inline-block mt-1";
-                }, 1500);
+                }, 1000);
             } catch (e) { 
-                statusEl.innerHTML = '<i class="fas fa-times-circle mr-1"></i> 🔴 ОШИБКА ЗАПИСИ';
+                statusEl.innerHTML = '<i class="fas fa-times-circle mr-1"></i> 🔴 ОШИБКА ЗАПИСИ / SAVE ERR';
                 statusEl.className = "text-[9px] font-bold uppercase text-red-600 bg-red-100 px-2 py-1 rounded inline-block mt-1";
             }
         }
 
         function render(fData = data) {
             tableBody.innerHTML = '';
+            
+            // Расчет статистики
+            let runCount = 0;
+            let dueCount = 0;
+
             fData.forEach((item, i) => {
                 const isIDU = item.type === 'IDU';
                 const days = Math.floor((new Date() - new Date(item.date || new Date().toISOString().split('T')[0]))/(1000*60*60*24));
                 const isDue = (isIDU && days >= 7) || (!isIDU && days >= 3);
                 
+                if (isDue) dueCount++;
+                if (item.motor !== 'Off' && item.motor !== 'Error') runCount++;
+                
                 const tr = document.createElement('tr');
-                tr.className = `border-b dark:border-slate-700/50 ${isDue ? 'animate-pulse-red' : ''}`;
+                tr.className = `border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isDue ? 'animate-pulse-red' : ''}`;
                 tr.innerHTML = `
                     <td class="px-4 py-4"><input type="date" value="${item.date}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-black outline-none text-slate-600 dark:text-slate-300 dark:[color-scheme:dark]"></td>
                     <td class="px-4 py-4"><div class="font-mono font-black text-sm text-blue-600 dark:text-blue-400">${item.kks}</div><div class="text-[9px] opacity-50 uppercase font-bold">${item.type}</div></td>
                     <td class="px-4 py-4"><input value="${item.area}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] font-black w-full outline-none uppercase text-slate-500 dark:text-slate-400"></td>
-                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1">`}</td>
-                    <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp}" onchange="u(${i},'temp',this.value)" class="w-14 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 ${item.temp>25?'text-red-500':''}">`}</td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'motor',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none">${isIDU ? `<option value="High Fan" ${item.motor=='High Fan'?'selected':''}>High Fan</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>` : `<option value="Running" ${item.motor=='Running'?'selected':''}>Running</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>`}</select></td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'power',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none"><option value="Normal" ${item.power=='Normal'?'selected':''}>Normal</option><option value="Off" ${item.power=='Off'?'selected':''}>Off</option></select></td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'filter',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none"><option value="Clean" ${item.filter=='Clean'?'selected':''}>Clean</option><option value="Dirty" ${item.filter=='Dirty'?'selected':''}>Dirty</option></select></td>
-                    <td class="px-4 py-4 text-center"><button onclick="u(${i},'date','${new Date().toISOString().split('T')[0]}')" class="w-8 h-8 rounded-full transition-all ${isDue?'bg-orange-500 text-white animate-bounce shadow-lg shadow-orange-500/50':'bg-slate-100 dark:bg-slate-800 text-slate-400'}"><i class="fas fa-check text-[10px]"></i></button></td>
-                    <td class="px-4 py-4 text-center"><button onclick="t(${i})" class="text-[9px] font-black uppercase px-3 py-1 rounded-full ${item.alarm=='Alarm'?'bg-red-500 text-white shadow-md':'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'}">${item.alarm}</button></td>
+                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-blue-500 outline-none">`}</td>
+                    <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp}" onchange="u(${i},'temp',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-red-500 outline-none ${item.temp>25?'text-red-500':''}">`}</td>
+                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'motor',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer">${isIDU ? `<option value="High Fan" ${item.motor=='High Fan'?'selected':''}>High Fan</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>` : `<option value="Running" ${item.motor=='Running'?'selected':''}>Running</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>`}</select></td>
+                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'power',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer"><option value="Normal" ${item.power=='Normal'?'selected':''}>Normal</option><option value="Off" ${item.power=='Off'?'selected':''}>Off</option></select></td>
+                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'filter',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer"><option value="Clean" ${item.filter=='Clean'?'selected':''}>Clean</option><option value="Dirty" ${item.filter=='Dirty'?'selected':''}>Dirty</option></select></td>
+                    <td class="px-4 py-4 text-center"><button onclick="u(${i},'date','${new Date().toISOString().split('T')[0]}')" class="w-8 h-8 rounded-full transition-all ${isDue?'bg-orange-500 text-white animate-bounce shadow-lg shadow-orange-500/50':'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-emerald-500 hover:text-white'}"><i class="fas fa-check text-[10px]"></i></button></td>
+                    <td class="px-4 py-4 text-center"><button onclick="t(${i})" class="text-[9px] font-black uppercase px-3 py-1 rounded-full transition-all ${item.alarm=='Alarm'?'bg-red-500 text-white shadow-md hover:bg-red-600':'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 hover:bg-emerald-200'}">${item.alarm}</button></td>
                 `;
                 tableBody.appendChild(tr);
             });
+
+            // Обновление цифр в карточках
+            document.getElementById('statTotal').innerText = data.length;
+            document.getElementById('statComp').innerText = runCount;
+            document.getElementById('statDue').innerText = dueCount;
         }
 
         function u(i, f, v) { data[i][f] = v; render(); save(); }
         function t(i) { data[i].alarm = data[i].alarm == 'Normal' ? 'Alarm' : 'Normal'; render(); save(); }
-        function resetToDefault() { if(confirm("Внимание! Это полностью перезапишет Google Таблицу исходными данными с завода. Продолжить?")) { data = getDefaultData(); save(true); render(); } }
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('hvac_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
+        
+        function resetToDefault() { 
+            if(confirm("WARNING: This will overwrite the Google Sheet with default factory data. Continue? / Внимание: Это перезапишет базу исходными данными. Продолжить?")) { 
+                data = getDefaultData(); 
+                save(true); 
+                render(); 
+            } 
+        }
+        
+        function toggleTheme() { 
+            document.documentElement.classList.toggle('dark'); 
+            localStorage.setItem('hvac_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); 
+        }
+
+        function exportCSV() {
+            const blob = new Blob(["\ufeff" + Papa.unparse(data)], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `HVAC_Report_${new Date().toLocaleDateString()}.csv`;
+            link.click();
+        }
+
+        function copyTelegramReport() { 
+            const msg = `⚡ *HVAC UKS GH2 REPORT*\n📅 Date: ${new Date().toLocaleDateString()}\n🔹 Total Units: ${data.length}\n🔹 Running: ${document.getElementById('statComp').innerText}\n🔹 Maintenance Due: ${document.getElementById('statDue').innerText}\n✅ All systems checked.`;
+            navigator.clipboard.writeText(msg).then(()=>alert("Report copied to clipboard! / Отчет скопирован!")); 
+        }
+
         window.onload = () => {
             if (localStorage.getItem('hvac_theme') === 'dark') document.documentElement.classList.add('dark');
             sync();
+            // Авто-обновление раз в минуту
+            setInterval(sync, 60000);
         };
-        document.getElementById('search').oninput = e => render(data.filter(x => x.kks.toLowerCase().includes(e.target.value.toLowerCase())));
-        function copyTelegramReport() { navigator.clipboard.writeText(`⚡ UKS GH2 HVAC: ${new Date().toLocaleDateString()}\nОборудование проверено, параметры в норме.`).then(()=>alert("Отчет скопирован!")); }
+
+        document.getElementById('search').oninput = e => render(data.filter(x => x.kks.toLowerCase().includes(e.target.value.toLowerCase()) || x.area.toLowerCase().includes(e.target.value.toLowerCase())));
     </script>
 </body>
 </html>
