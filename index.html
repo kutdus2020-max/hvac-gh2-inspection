@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HVAC CLOUD v8.2</title>
+    <title>HVAC CLOUD v8.3</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -14,6 +14,8 @@
         // ============================================================
         const CLOUD_URL = https://script.google.com/macros/s/AKfycbzGbBv-YI7ze68awl-_kSWhUXqnfEfN-9SOnzSlFhHsVDDZ7OaZ-Huqk5-nOY84ghqfIA/exec; 
         // ============================================================
+        
+        tailwind.config = { darkMode: 'class' };
     </script>
     
     <style>
@@ -31,24 +33,28 @@
                 <div class="bg-blue-600 p-2.5 rounded-2xl text-white shadow-lg"><i class="fas fa-cloud"></i></div>
                 <div>
                     <h1 class="text-xl font-black uppercase tracking-tight">HVAC UKS GH2</h1>
-                    <p id="cloudStatus" class="text-[9px] font-bold uppercase text-slate-400 italic">Syncing...</p>
+                    <div id="cloudStatus" class="text-[9px] font-bold uppercase text-slate-500 bg-slate-200 px-2 py-1 rounded shadow-sm inline-block mt-1">
+                        <i class="fas fa-spinner fa-spin mr-1"></i> Ожидание...
+                    </div>
                 </div>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 items-center">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-amber-400 flex items-center justify-center border border-slate-200 dark:border-slate-700"><i id="themeIcon" class="fas fa-moon"></i></button>
                 <button onclick="copyTelegramReport()" class="bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-emerald-400">ОТЧЕТ TG</button>
-                <button onclick="resetToDefault()" class="bg-slate-200 dark:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-500">СБРОС / RESET</button>
+                <button onclick="resetToDefault()" class="bg-slate-200 dark:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-red-500 transition-colors">СБРОС БАЗЫ</button>
             </div>
         </div>
     </nav>
 
     <main class="max-w-[1800px] mx-auto p-4 md:p-8">
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-            <div class="p-4 border-b dark:border-slate-700">
-                <input type="text" id="search" placeholder="Поиск KKS / Локация..." class="w-full md:w-96 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-900 border-none text-sm outline-none">
+            <div class="p-4 border-b dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center">
+                <span class="text-xs font-black uppercase text-slate-400 tracking-widest">Master Data Table</span>
+                <input type="text" id="search" placeholder="Поиск KKS / Локация..." class="w-72 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none">
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 dark:bg-slate-900/50 text-[9px] font-black uppercase text-slate-400">
+                    <thead class="bg-slate-100 dark:bg-slate-900 text-[9px] font-black uppercase text-slate-400">
                         <tr>
                             <th class="px-4 py-4">Дата</th>
                             <th class="px-4 py-4">KKS / Тип</th>
@@ -72,7 +78,6 @@
         let data = [];
         const tableBody = document.getElementById('tableBody');
         
-        // Твои 67 KKS номеров уже вшиты тут как "план Б"
         function getDefaultData() {
             const d = new Date().toISOString().split('T')[0];
             return [
@@ -148,62 +153,68 @@
         }
 
         async function sync() {
-            if (CLOUD_URL.includes("ВСТАВЬ")) return;
+            const statusEl = document.getElementById('cloudStatus');
+            
+            if (CLOUD_URL.includes("ВСТАВЬ")) {
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> ⚠️ НЕТ ССЫЛКИ';
+                statusEl.className = "text-[9px] font-bold uppercase text-red-600 bg-red-100 px-2 py-1 rounded inline-block mt-1";
+                if (data.length === 0) data = getDefaultData();
+                render();
+                return;
+            }
+
             try {
                 const response = await fetch(CLOUD_URL);
                 const cloudData = await response.json();
-                if (cloudData.length > 0) {
+                
+                if (cloudData && cloudData.length > 0) {
                     data = cloudData;
-                    document.getElementById('cloudStatus').innerText = "Online / Cloud Sync OK";
+                    statusEl.innerHTML = '<i class="fas fa-check-circle mr-1"></i> 🟢 ONLINE / SYNC OK';
+                    statusEl.className = "text-[9px] font-bold uppercase text-emerald-600 bg-emerald-100 px-2 py-1 rounded shadow-sm inline-block mt-1";
                     render();
+                } else {
+                    statusEl.innerHTML = '<i class="fas fa-upload mr-1"></i> 🟡 ЗАПИСЬ БАЗЫ...';
+                    statusEl.className = "text-[9px] font-bold uppercase text-amber-600 bg-amber-100 px-2 py-1 rounded shadow-sm inline-block mt-1";
+                    data = getDefaultData();
+                    render();
+                    await save(true); // Форсируем сохранение в пустую таблицу
                 }
             } catch (e) {
-                document.getElementById('cloudStatus').innerText = "Offline / Local Mode";
+                statusEl.innerHTML = '<i class="fas fa-wifi fa-slash mr-1"></i> 🔴 ОШИБКА СЕТИ (LOCAL)';
+                statusEl.className = "text-[9px] font-bold uppercase text-red-600 bg-red-100 px-2 py-1 rounded inline-block mt-1";
                 if (data.length === 0) data = getDefaultData();
                 render();
             }
         }
 
-        async function save() {
+        async function save(isInit = false) {
             if (CLOUD_URL.includes("ВСТАВЬ")) return;
-            document.getElementById('cloudStatus').innerText = "Saving...";
+            const statusEl = document.getElementById('cloudStatus');
+            statusEl.innerHTML = '<i class="fas fa-cloud-upload-alt mr-1"></i> 🔵 СОХРАНЕНИЕ...';
+            statusEl.className = "text-[9px] font-bold uppercase text-blue-600 bg-blue-100 px-2 py-1 rounded inline-block mt-1";
             try {
                 await fetch(CLOUD_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                setTimeout(sync, 1000);
-            } catch (e) { document.getElementById('cloudStatus').innerText = "Save Error!"; }
+                setTimeout(() => {
+                    statusEl.innerHTML = isInit ? '<i class="fas fa-check-double mr-1"></i> 🟢 БАЗА СОЗДАНА' : '<i class="fas fa-check-circle mr-1"></i> 🟢 ONLINE / SYNC OK';
+                    statusEl.className = "text-[9px] font-bold uppercase text-emerald-600 bg-emerald-100 px-2 py-1 rounded shadow-sm inline-block mt-1";
+                }, 1500);
+            } catch (e) { 
+                statusEl.innerHTML = '<i class="fas fa-times-circle mr-1"></i> 🔴 ОШИБКА ЗАПИСИ';
+                statusEl.className = "text-[9px] font-bold uppercase text-red-600 bg-red-100 px-2 py-1 rounded inline-block mt-1";
+            }
         }
 
         function render(fData = data) {
             tableBody.innerHTML = '';
             fData.forEach((item, i) => {
                 const isIDU = item.type === 'IDU';
-                const days = Math.floor((new Date() - new Date(item.date))/(1000*60*60*24));
+                const days = Math.floor((new Date() - new Date(item.date || new Date().toISOString().split('T')[0]))/(1000*60*60*24));
                 const isDue = (isIDU && days >= 7) || (!isIDU && days >= 3);
                 
                 const tr = document.createElement('tr');
-                tr.className = `border-b dark:border-slate-700 ${isDue ? 'animate-pulse-red' : ''}`;
+                tr.className = `border-b dark:border-slate-700/50 ${isDue ? 'animate-pulse-red' : ''}`;
                 tr.innerHTML = `
-                    <td class="px-4 py-4"><input type="date" value="${item.date}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-bold outline-none"></td>
-                    <td class="px-4 py-4"><div class="font-bold text-sm">${item.kks}</div><div class="text-[9px] opacity-50">${item.type}</div></td>
-                    <td class="px-4 py-4"><input value="${item.area}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] w-full outline-none uppercase"></td>
-                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-12 bg-slate-100 dark:bg-slate-900 rounded text-center text-xs">`}</td>
-                    <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp}" onchange="u(${i},'temp',this.value)" class="w-12 bg-slate-100 dark:bg-slate-900 rounded text-center text-xs ${item.temp>25?'text-red-500':''}">`}</td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'motor',this.value)" class="bg-transparent text-[10px] font-bold outline-none">${isIDU ? `<option value="High Fan" ${item.motor=='High Fan'?'selected':''}>High Fan</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>` : `<option value="Running" ${item.motor=='Running'?'selected':''}>Running</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>`}</select></td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'power',this.value)" class="bg-transparent text-[10px] font-bold outline-none"><option value="Normal" ${item.power=='Normal'?'selected':''}>Normal</option><option value="Off" ${item.power=='Off'?'selected':''}>Off</option></select></td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'filter',this.value)" class="bg-transparent text-[10px] font-bold outline-none"><option value="Clean" ${item.filter=='Clean'?'selected':''}>Clean</option><option value="Dirty" ${item.filter=='Dirty'?'selected':''}>Dirty</option></select></td>
-                    <td class="px-4 py-4 text-center"><button onclick="u(${i},'date','${new Date().toISOString().split('T')[0]}')" class="p-2 rounded-full ${isDue?'bg-orange-500 text-white animate-bounce':'bg-slate-100 dark:bg-slate-900'}"><i class="fas fa-check text-[10px]"></i></button></td>
-                    <td class="px-4 py-4 text-center"><button onclick="t(${i})" class="text-[9px] font-bold uppercase px-2 py-1 rounded-full ${item.alarm=='Alarm'?'bg-red-500 text-white':'bg-emerald-100 text-emerald-700'}">${item.alarm}</button></td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-        function u(i, f, v) { data[i][f] = v; render(); save(); }
-        function t(i) { data[i].alarm = data[i].alarm == 'Normal' ? 'Alarm' : 'Normal'; render(); save(); }
-        function resetToDefault() { if(confirm("Reset data?")) { data = getDefaultData(); save(); render(); } }
-        window.onload = sync;
-        document.getElementById('search').oninput = e => render(data.filter(x => x.kks.toLowerCase().includes(e.target.value.toLowerCase())));
-        function copyTelegramReport() { navigator.clipboard.writeText(`HVAC GH2: ${new Date().toLocaleDateString()}\nAll units OK.`).then(()=>alert("Copied!")); }
-    </script>
-</body>
-</html>
+                    <td class="px-4 py-4"><input type="date" value="${item.date}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-black outline-none text-slate-600 dark:text-slate-300 dark:[color-scheme:dark]"></td>
+                    <td class="px-4 py-4"><div class="font-mono font-black text-sm text-blue-600 dark:text-blue-400">${item.kks}</div><div class="text-[9px] opacity-50 uppercase font-bold">${item.type}</div></td>
+                    <td class="px-4 py-4"><input value="${item.area}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] font-black w-full outline-none uppercase text-slate-500 dark:text-slate-400"></td>
+                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-slate-100 dark:bg-slate-90
