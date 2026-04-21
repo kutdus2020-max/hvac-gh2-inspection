@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HVAC CLOUD v8.4</title>
+    <title>HVAC CLOUD v8.5</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -92,7 +92,7 @@
                             <th class="px-4 py-5 w-40">Локация / Area</th>
                             <th class="px-2 py-5 text-center">Давление / Press.</th>
                             <th class="px-2 py-5 text-center">Темп. / Temp.</th>
-                            <th class="px-4 py-5 text-center border-l border-slate-200 dark:border-slate-700">Агрегат / Motor</th>
+                            <th class="px-4 py-5 text-center border-l border-slate-200 dark:border-slate-700">Компрессор / Compressor</th>
                             <th class="px-4 py-5 text-center">Питание / Power</th>
                             <th class="px-4 py-5 text-center border-l border-slate-200 dark:border-slate-700">Фильтр / Filter</th>
                             <th class="px-4 py-5 text-center">ТО / Check</th>
@@ -112,74 +112,74 @@
         function getDefaultData() {
             const d = new Date().toISOString().split('T')[0];
             return [
-                { date: d, kks: 'XAA01EB001', type: 'IDU', area: 'Rectifier Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA01EB002', type: 'IDU', area: 'Rectifier Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA01EB003', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA01EB004', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA01EB005', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA01EB006', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB001', type: 'IDU', area: 'Switchgear Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB002', type: 'IDU', area: 'Switchgear Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB013', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB014', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB015', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB016', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB003', type: 'IDU', area: 'Battery Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB004', type: 'IDU', area: 'Battery Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB009', type: 'ODU', area: 'Battery Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB010', type: 'ODU', area: 'Battery Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB005', type: 'IDU', area: 'DC & UPS', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB006', type: 'IDU', area: 'DC & UPS', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB011', type: 'ODU', area: 'DC & UPS', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB012', type: 'ODU', area: 'DC & UPS', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB007', type: 'IDU', area: 'SWGR Cabinet Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB008', type: 'IDU', area: 'SWGR Cabinet Room', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB017', type: 'ODU', area: 'SWGR Cabinet Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA03EB018', type: 'ODU', area: 'SWGR Cabinet Room', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB042', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB041', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB048', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB049', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EP050', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EP051', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB001', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB002', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB003', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB004', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB005', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB006', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB036', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB037', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB038', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB039', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB009', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB010', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB014', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB015', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB016', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB017', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB018', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB019', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB020', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB021', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB022', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB023', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB024', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB025', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB029', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB030', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB031', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB032', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB033', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB034', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'High Fan', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB007', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB008', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB011', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB012', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB013', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB026', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB027', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
-                { date: d, kks: 'XAA02EB028', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, motor: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' }
+                { date: d, kks: 'XAA01EB001', type: 'IDU', area: 'Rectifier Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA01EB002', type: 'IDU', area: 'Rectifier Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA01EB003', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA01EB004', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA01EB005', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA01EB006', type: 'ODU', area: 'Rectifier Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB001', type: 'IDU', area: 'Switchgear Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB002', type: 'IDU', area: 'Switchgear Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB013', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB014', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB015', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB016', type: 'ODU', area: 'Switchgear Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB003', type: 'IDU', area: 'Battery Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB004', type: 'IDU', area: 'Battery Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB009', type: 'ODU', area: 'Battery Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB010', type: 'ODU', area: 'Battery Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB005', type: 'IDU', area: 'DC & UPS', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB006', type: 'IDU', area: 'DC & UPS', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB011', type: 'ODU', area: 'DC & UPS', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB012', type: 'ODU', area: 'DC & UPS', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB007', type: 'IDU', area: 'SWGR Cabinet Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB008', type: 'IDU', area: 'SWGR Cabinet Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB017', type: 'ODU', area: 'SWGR Cabinet Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA03EB018', type: 'ODU', area: 'SWGR Cabinet Room', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB042', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB041', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB048', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB049', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EP050', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EP051', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB001', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB002', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB003', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB004', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB005', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB006', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB036', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB037', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB038', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB039', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB009', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB010', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB014', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB015', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB016', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB017', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB018', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB019', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB020', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB021', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB022', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB023', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB024', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB025', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB029', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB030', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB031', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB032', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB033', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB034', type: 'IDU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB007', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB008', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB011', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB012', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB013', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB026', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB027', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' },
+                { date: d, kks: 'XAA02EB028', type: 'ODU', area: 'Integrated Bld', press: 0, temp: 0, comp: 'Running', power: 'Normal', filter: 'Clean', alarm: 'Normal' }
             ];
         }
 
@@ -238,7 +238,6 @@
         function render(fData = data) {
             tableBody.innerHTML = '';
             
-            // Расчет статистики
             let runCount = 0;
             let dueCount = 0;
 
@@ -248,17 +247,26 @@
                 const isDue = (isIDU && days >= 7) || (!isIDU && days >= 3);
                 
                 if (isDue) dueCount++;
-                if (item.motor !== 'Off' && item.motor !== 'Error') runCount++;
+                // Считаем агрегат в работе, если статус Running или Standby (не выключен и не в ошибке)
+                if (item.comp === 'Running' || item.comp === 'Standby') runCount++;
                 
                 const tr = document.createElement('tr');
                 tr.className = `border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isDue ? 'animate-pulse-red' : ''}`;
+                
                 tr.innerHTML = `
                     <td class="px-4 py-4"><input type="date" value="${item.date}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-black outline-none text-slate-600 dark:text-slate-300 dark:[color-scheme:dark]"></td>
                     <td class="px-4 py-4"><div class="font-mono font-black text-sm text-blue-600 dark:text-blue-400">${item.kks}</div><div class="text-[9px] opacity-50 uppercase font-bold">${item.type}</div></td>
                     <td class="px-4 py-4"><input value="${item.area}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] font-black w-full outline-none uppercase text-slate-500 dark:text-slate-400"></td>
                     <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-blue-500 outline-none">`}</td>
                     <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp}" onchange="u(${i},'temp',this.value)" class="w-14 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 focus:ring-2 focus:ring-red-500 outline-none ${item.temp>25?'text-red-500':''}">`}</td>
-                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'motor',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer">${isIDU ? `<option value="High Fan" ${item.motor=='High Fan'?'selected':''}>High Fan</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>` : `<option value="Running" ${item.motor=='Running'?'selected':''}>Running</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>`}</select></td>
+                    <td class="px-4 py-4 text-center">
+                        <select onchange="u(${i},'comp',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer ${item.comp === 'Error' ? 'text-red-500' : item.comp === 'Standby' ? 'text-amber-500' : ''}">
+                            <option value="Running" ${item.comp=='Running'?'selected':''}>В работе / Run</option>
+                            <option value="Standby" ${item.comp=='Standby'?'selected':''}>Ожидание / Stby</option>
+                            <option value="Off" ${item.comp=='Off'?'selected':''}>Выкл / Off</option>
+                            <option value="Error" ${item.comp=='Error'?'selected':''}>Ошибка / Err</option>
+                        </select>
+                    </td>
                     <td class="px-4 py-4 text-center"><select onchange="u(${i},'power',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer"><option value="Normal" ${item.power=='Normal'?'selected':''}>Normal</option><option value="Off" ${item.power=='Off'?'selected':''}>Off</option></select></td>
                     <td class="px-4 py-4 text-center"><select onchange="u(${i},'filter',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer"><option value="Clean" ${item.filter=='Clean'?'selected':''}>Clean</option><option value="Dirty" ${item.filter=='Dirty'?'selected':''}>Dirty</option></select></td>
                     <td class="px-4 py-4 text-center"><button onclick="u(${i},'date','${new Date().toISOString().split('T')[0]}')" class="w-8 h-8 rounded-full transition-all ${isDue?'bg-orange-500 text-white animate-bounce shadow-lg shadow-orange-500/50':'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-emerald-500 hover:text-white'}"><i class="fas fa-check text-[10px]"></i></button></td>
@@ -267,7 +275,6 @@
                 tableBody.appendChild(tr);
             });
 
-            // Обновление цифр в карточках
             document.getElementById('statTotal').innerText = data.length;
             document.getElementById('statComp').innerText = runCount;
             document.getElementById('statDue').innerText = dueCount;
@@ -298,14 +305,13 @@
         }
 
         function copyTelegramReport() { 
-            const msg = `⚡ *HVAC UKS GH2 REPORT*\n📅 Date: ${new Date().toLocaleDateString()}\n🔹 Total Units: ${data.length}\n🔹 Running: ${document.getElementById('statComp').innerText}\n🔹 Maintenance Due: ${document.getElementById('statDue').innerText}\n✅ All systems checked.`;
+            const msg = `⚡ *HVAC UKS GH2 REPORT*\n📅 Date: ${new Date().toLocaleDateString()}\n🔹 Total Units: ${data.length}\n🔹 Running/Standby: ${document.getElementById('statComp').innerText}\n🔹 Maintenance Due: ${document.getElementById('statDue').innerText}\n✅ All systems checked.`;
             navigator.clipboard.writeText(msg).then(()=>alert("Report copied to clipboard! / Отчет скопирован!")); 
         }
 
         window.onload = () => {
             if (localStorage.getItem('hvac_theme') === 'dark') document.documentElement.classList.add('dark');
             sync();
-            // Авто-обновление раз в минуту
             setInterval(sync, 60000);
         };
 
