@@ -217,4 +217,28 @@
                     <td class="px-4 py-4"><input type="date" value="${item.date}" onchange="u(${i},'date',this.value)" class="bg-transparent text-[10px] font-black outline-none text-slate-600 dark:text-slate-300 dark:[color-scheme:dark]"></td>
                     <td class="px-4 py-4"><div class="font-mono font-black text-sm text-blue-600 dark:text-blue-400">${item.kks}</div><div class="text-[9px] opacity-50 uppercase font-bold">${item.type}</div></td>
                     <td class="px-4 py-4"><input value="${item.area}" onchange="u(${i},'area',this.value)" class="bg-transparent text-[10px] font-black w-full outline-none uppercase text-slate-500 dark:text-slate-400"></td>
-                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-slate-100 dark:bg-slate-90
+                    <td class="px-2 py-4 text-center">${isIDU ? '-' : `<input type="number" value="${item.press}" onchange="u(${i},'press',this.value)" class="w-14 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1">`}</td>
+                    <td class="px-2 py-4 text-center">${!isIDU ? '-' : `<input type="number" value="${item.temp}" onchange="u(${i},'temp',this.value)" class="w-14 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-center text-xs font-bold py-1 ${item.temp>25?'text-red-500':''}">`}</td>
+                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'motor',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none">${isIDU ? `<option value="High Fan" ${item.motor=='High Fan'?'selected':''}>High Fan</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>` : `<option value="Running" ${item.motor=='Running'?'selected':''}>Running</option><option value="Off" ${item.motor=='Off'?'selected':''}>Off</option>`}</select></td>
+                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'power',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none"><option value="Normal" ${item.power=='Normal'?'selected':''}>Normal</option><option value="Off" ${item.power=='Off'?'selected':''}>Off</option></select></td>
+                    <td class="px-4 py-4 text-center"><select onchange="u(${i},'filter',this.value)" class="bg-transparent text-[10px] font-black uppercase outline-none"><option value="Clean" ${item.filter=='Clean'?'selected':''}>Clean</option><option value="Dirty" ${item.filter=='Dirty'?'selected':''}>Dirty</option></select></td>
+                    <td class="px-4 py-4 text-center"><button onclick="u(${i},'date','${new Date().toISOString().split('T')[0]}')" class="w-8 h-8 rounded-full transition-all ${isDue?'bg-orange-500 text-white animate-bounce shadow-lg shadow-orange-500/50':'bg-slate-100 dark:bg-slate-800 text-slate-400'}"><i class="fas fa-check text-[10px]"></i></button></td>
+                    <td class="px-4 py-4 text-center"><button onclick="t(${i})" class="text-[9px] font-black uppercase px-3 py-1 rounded-full ${item.alarm=='Alarm'?'bg-red-500 text-white shadow-md':'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'}">${item.alarm}</button></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function u(i, f, v) { data[i][f] = v; render(); save(); }
+        function t(i) { data[i].alarm = data[i].alarm == 'Normal' ? 'Alarm' : 'Normal'; render(); save(); }
+        function resetToDefault() { if(confirm("Внимание! Это полностью перезапишет Google Таблицу исходными данными с завода. Продолжить?")) { data = getDefaultData(); save(true); render(); } }
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('hvac_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
+        window.onload = () => {
+            if (localStorage.getItem('hvac_theme') === 'dark') document.documentElement.classList.add('dark');
+            sync();
+        };
+        document.getElementById('search').oninput = e => render(data.filter(x => x.kks.toLowerCase().includes(e.target.value.toLowerCase())));
+        function copyTelegramReport() { navigator.clipboard.writeText(`⚡ UKS GH2 HVAC: ${new Date().toLocaleDateString()}\nОборудование проверено, параметры в норме.`).then(()=>alert("Отчет скопирован!")); }
+    </script>
+</body>
+</html>
